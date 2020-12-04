@@ -1,0 +1,62 @@
+
+
+                 Programs and libraries by Horatiu A. Tanescu
+
+                                 June 17 1997
+
+
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³  MOUKEY v1.0 (May 29 1997)  ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+  MOUKEY is a collection of mouse & keyboard routines for C/C++ and includes
+  an advanced event-driven mouse & keyboard interface.
+
+  Features: - Complex mouse interface (44 functions), w/source
+            - Keyboard routines: get/check/unget keys, set keyboard rate,
+              support for enhanced keyboards (work with F11, F12), w/source
+            - An advanced but easy-to-use event-driven mouse & keyboard
+              interface. Monitors mouse moves, clicks & double-clicks,
+              mouse auto events, key presses. Build better event-driven DOS
+              applications faster and easier.
+            - Comprehensive documentation
+
+  Freeware.
+
+  Available from simtel: msdos/pgmutl/moukey10.zip
+
+
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³  XMSBCP v1.1 (April 1997)  ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+  XMSBCP provides a natural and easy-to-use interface to XMS, enabling DOS
+  programs compiled with Borland C/C++ and Borland Pascal to access extended
+  memory. XMSBCP currently implements all the XMS 3.0 API Functions (HMA
+  Management, A20 Management, Extended Memory Management and Upper Memory
+  Management). XMSBCP is written using the Borland C and Borland Pascal
+  built-in assembler for speed and small size. Full source code is included.
+  Comprehensive documentation.
+
+  Freeware.
+
+  Available from simtel: msdos/pgmutl/xmsbcp11.zip
+
+
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³  XMSCC v1.0 (May 9 1997)  ³
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+  XMS Control Center displays the current setup of your eXtended Memory
+  Manager (XMM) and allows you to change the layout of extended memory by
+  modifying the currently allocated Extended Memory Blocks (EMBs).
+
+  XMS Control Center is able to display information about each extended
+  block currently allocated and allows you to free, lock, unlock or
+  reallocate it. You can also allocate new extended memory blocks.
+
+  Works in both interactive and command-line mode.
+
+  Freeware.
+
+  Available from simtel: msdos/memutil/xmscc10.zip

@@ -1,0 +1,437 @@
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ                                                                           บ
+บ        XLIB v2.0 - Graphics Library for Borland/Turbo Pascal 7.0          บ
+บ                                                                           บ
+บ               Tristan Tarrant - tristant@cogs.susx.ac.uk                  บ
+บ                                                                           บ
+ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+บ                                                                           บ
+บ                                 Credits                                   บ
+บ                                                                           บ
+บ                             Themie Gouthas                                บ
+บ                                                                           บ
+บ                            Matthew MacKenzie                              บ
+บ                                                                           บ
+บ                             Tore Bastiansen                               บ
+บ                                                                           บ
+บ                                 Andy Tam                                  บ
+บ                                                                           บ
+บ                               Douglas Webb                                บ
+บ                                                                           บ
+บ                              John  Schlagel                               บ
+บ                                                                           บ
+ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+บ                                                                           บ
+บ           I informally reserve all rights to the code in XLIB             บ
+บ       Rights to contributed code is also assumed to be reserved by        บ
+บ                          the original authors.                            บ
+บ                                                                           บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ DISCLAIMER                                                                บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+  This library is distributed AS IS. The author/s specifically disclaim any
+  responsibility for any loss of profit or any incidental, consequential or
+  other damages.
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ XBM2 : EXPORTED PROCEDURES AND FUNCTIONS                                  บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+ 
+  This unit implements a set of functions to operate on bitmaps. XLIB2 uses
+  three different kinds of bitmaps :
+    Planar Bitmaps (PBMs),
+    Video Bitmaps   (VBMs),
+    Compiled Bitmaps (CBMs).
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ PBMs : EXPORTED PROCEDURES AND FUNCTIONS                                  บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+  PBMs as used by these functions have the following structure:
+
+    byte 0                 The bitmap width in bytes (4 pixel groups) range 1..255
+    byte 1                 The bitmap height in rows range 1..255
+    byte 2..n1             The plane 0 pixels width*height bytes
+    byte n1..n2            The plane 1 pixels width*height bytes
+    byte n2..n3            The plane 2 pixels width*height bytes
+    byte n3..n4            The plane 3 pixels width*height bytes
+
+  These functions provide the fastest possible bitmap blts from system ram
+  to video and further, the single bitmap is applicable to all pixel
+  alignments. The masked functions do not need separate masks since all non
+  zero pixels are considered to be masking pixels, hence if a pixel is 0 the
+  corresponding screen destination pixel is left unchanged.
+
+
+  xputmaskedpbm
+  -------------
+
+  Procedure xputmaskedpbm( X, Y, ScrnOffs : word; var Bitmap);
+
+  Mask write a planar bitmap from system ram to video ram. All zero source
+  bitmap bytes indicate destination byte to be left unchanged.
+
+  Source Bitmap structure:
+
+  Width:byte, Height:byte, Bitmap data (plane 0)...Bitmap data (plane 1)..,
+  Bitmap data (plane 2)..,Bitmap data (plane 3)..
+
+  NOTE: width is in bytes ie lots of 4 pixels
+
+  LIMITATIONS: No clipping is supported
+	       Only supports bitmaps with widths which are a multiple of
+	       4 pixels
+
+  xputpbm
+  -------
+
+  Procedure xputpbm( X, Y, ScrnOffs : word; var Bitmap );
+
+  Write a planar bitmap from system ram to video ram.
+
+  Source Bitmap structure:
+
+  Width:byte, Height:byte, Bitmap data (plane 0)...Bitmap data (plane 1)..,
+  Bitmap data (plane 2)..,Bitmap data (plane 3)..
+
+  NOTE: width is in bytes ie lots of 4 pixels
+
+  LIMITATIONS: No clipping is supported
+	       Only supports bitmaps with widths which are a multiple of
+	       4 pixels
+
+  xgetpbm
+  -------
+
+  Procedure xgetpbm( X, Y : word; Bw, Bh : byte; ScrnOffs : word;
+		var Bitmap );
+
+  Read a planar bitmap to system ram from video ram.
+
+  Source Bitmap structure:
+
+  Width:byte, Height:byte, Bitmap data (plane 0)...Bitmap data (plane 1)..,
+  Bitmap data (plane 2)..,Bitmap data (plane 3)..
+
+  NOTE: width is in bytes ie lots of 4 pixels
+
+  LIMITATIONS: No clipping is supported
+	       Only supports bitmaps with widths which are a multiple of
+	       4 pixels
+
+
+
+  A similar set of functions have been implemented to operate on planar
+  bitmaps but incorporating clipping to a user defined
+  clipping rectangle (which is set by xsetcliprect )
+
+  There are three variations of the normal functions in this unit
+  identified by the three function name extensions: clipx, clipy clipxy.
+  Because speed is critical in games programming you do not want to be
+  checking for clipping if not necessary thus for sprites that move only
+  horizontally you would use the clipx version of the put function,
+  for sprites that move vertically you would use the clipy version and for
+  sprites that move both directions you would use the clipxy version.
+  Keep in mind also that the clipping components of these functions assume
+  that the clipping rectangle is equal to or larger than the size of the
+  bitmap ie. if a bitmap is top clipped, it is assumed that the bitmap's
+  bottom is not also clipped. Similarly with horizontal clipping.
+  Note: performance in decreasing order is as follows.
+  clipy,clipx,clipxy with masked puts being slower than unmasked puts
+
+  Horizontal clipping is performed to byte boundaries (4 pixels) rather than
+  pixels. This allows for the fastest implementation of the functions. It is
+  not such a handicap because for one, your screen width a multiple of 4
+  pixels wide and  for most purposes it is the screen edges that form the
+  clipping rectangle.
+
+  Following is an example of setting a clipping rectangle to the logical
+  screen edges:
+
+  xsetcliprect(0,0,ScrnLogicalByteWidth,ScrnLogicalHeight)
+
+  NOTE: the functions now return a value;
+	1 if clipped image is fully clipped (ie no portion of it
+	appears on the screen) otherwise it returns 0
+
+
+  xputpbmclipx
+  ------------
+  xputpbmclipy
+  ------------
+  xputpbmclipxy
+  -------------
+  xputmaskedpbmclipx
+  ------------------
+  xputmaskedpbmclipy
+  ------------------
+  xputmaskedpbmclipxy
+  -------------------
+
+  For a detailed description of parameters etc. see equivalent functions
+  xputpbm, xputmaskedpbm
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ CBMs : EXPORTED PROCEDURES AND FUNCTIONS                                  บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+  o  xcompilebitmap compiles your bitmap into native code which writes
+     to the VGA screen in an X mode.
+  o  xputcbitmap converts X and Y coordinates into a location on the
+     screen, sets up the necessary VGA registers, and executes the compiled
+     bitmap as a subroutine.
+  o  xsizeofcbitmap takes a planar bitmap and returns an integer equal to
+     the size of the compiled bitmap which the planar bitmap would produce.
+     It is essentially a lobotomized version of xcompilebitmap, with all
+     the code generation replaced with a size counter.
+
+  xcompilebitmap scans through a source bitmap and generates 8086
+instructions to plot every nonzero pixel.  It is designed to be used
+before the action begins rather than on-the-fly.  The compiled bitmap
+contains no branches, and no reference to the zero (transparent) pixels.
+Where two pixels are exactly four columns apart they are plotted with a
+single 16-bit store, and the VGA MAPMASK register will be set at most
+four times.  As a result your bitmap may run several times faster than a
+traditional memory-to-VGA masked blit routine.
+  There is no way to perform clipping on these bitmaps, or to plot a
+pixel of color zero.
+  xcompilebitmap works with bitmaps in the standard Xlib planar bitmap
+format.  On a time scale of 60 frames per second, it is actually relatively
+slow.  Since a compiled bitmap is relocatable you may just want to have it
+saved to disk, and not include the source bitmap in your program at all.
+  The source bitmap format is an array of bytes, a little like this:
+
+  eye : array[0..29] of byte =
+  ( 4, 7,  { four byte columns across, seven rows tall }
+  0, 0, 0, 0, 9, 1, 1, 1, 9, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 9, 9, 1, 1, 1, 4, 4, 9, 9, 0, 0, 0, 0, 0,
+  0, 9, 9, 1, 2, 0, 0, 4, 4, 1, 9, 9, 0, 0, 0, 0,
+  9, 9, 9, 1, 0, 0, 0, 0, 1, 1, 9, 9, 9, 0, 0, 0,
+  0, 9, 9, 1, 2, 0, 0, 2, 1, 1, 9, 9, 0, 0, 0, 0,
+  0, 0, 9, 9, 1, 1, 1, 1, 1, 9, 9, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 9, 1, 1, 1, 9, 0, 0, 0, 0, 0, 0, 0 );
+
+  This is actually a linear bitmap, which is the wrong format for
+compilation, but is easier on human eyes.
+  To compile this image for a mode 360 pixels (90 byte columns) across:
+
+var
+  planareye : array[0..29] of byte;
+  CompiledEye : pointer;
+
+xbmtopbm( eye, planareye);
+getmem( CompiledEye, xsizeofcbitmap(planareye));
+xcompilebitmap(90, planareye, CompiledEye^);
+
+  Notice that both buffers must exist beforehand.  Since xcompilebitmap
+returns the size of the compiled code, in bytes, you can reallocate the
+bitmap immediately to the right size if using xsizeofxbitmap seems
+inconvenient (reallocation may even be faster, though using the function is
+cleaner).  The pointers are 32-bit because compiled bitmaps take so much
+space: they are at one end of the speed-versus-memory spectrum.  A good
+rule of thumb is to allocate (3.5 x buffer-height x buffer-width) + 25
+bytes (rounding up ;-), then pare your bitmap down when you find out how
+much space you've actually used.
+  Since the compiled bitmap has to fit within one segment of memory, it
+cannot contain more than about 19,000 pixels.  This will not be a
+limitation for most sane programmers.  If you are not a sane programmer try
+splitting your huge, unwieldy image up into smaller parts -- you can use
+the same gigantic bitmap if you divide it into horizontal slices for
+compilation.  For that matter, dividing the source up that way will let
+you use a source bitmap large than 64K, which is an even sicker idea...
+  Back to business.  A bitmap is compiled for only one width of screen.
+If you are using a logical screen larger than your physical screen, call
+the bitmap compiler with the logical width -- the important thing is the
+number of bytes per line.  Notice that you do not have to be in a graphics
+mode to use this routine.  This allows you to develop and compile bitmaps
+separately, with whatever utility programs you might cook up.
+
+  The final function is xputcbitmap.  To plot our eye at (99,4), on
+the page which starts at location 0:
+xputcbitmap(99, 4, 0, CompiledEye);
+  This function depends on the global variable ScrnLogicalByteWidth which
+should be the same number as the column parameter you used to compile your
+bitmap.
+  The XBM2 unit supports memory-to-VGA blits only.  XBM2 also includes 
+non-masking routines which can quickly save and restore the background 
+screen behind your bitmap, using fast string operations.
+
+xcompilepbm
+-----------
+xsizeofcpbm
+-----------
+
+These two procs are similar to the previous two, though they work on PBMs.
+There is also a set of procs that produces 32bit bitmaps. These are slightly
+larger and slower (why?), but they are there for compatibility reasons.
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ VBMs : EXPORTED PROCEDURES AND FUNCTIONS                                  บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+Yet another type of bitmap to complement planar and compiled bitmaps are
+Video Bitmaps, VRAM based bitmaps. If a 4 cylinder car is analagous to planar
+bitmaps, that is thrifty on memory consumption but low performance and and a
+V8 is analagous to Compiled bitmaps, memory guzzlers that really fly, then
+VRAM based bitmaps are the 6 cylinder modest performers with acceptable memory
+consumption. They are faster, though, only on VLB/PCI video boards.
+
+To summarise their selling points, VBM's are moderately fast with fair memory
+consumption, and unlike compiled bitmaps, can be clipped. The disadvantages
+are that they are limited by the amount of free video ram and have a complex
+structure.
+
+The VRAM bitmap format is rather complex consisting of components stored in
+video ram and components in system ram working together. This complexity
+necessitates the existence of a creation function xmakevbm which takes
+an input linear bitmap and generates the equivalent VBM (VRAM Bit Map).
+
+VBM structure:
+
+  word  0   Size          Total size of this VBM structure in bytes
+  word  1   ImageWidth    Width in bytes of the image (for all alignments)
+  word  2   ImageHeight   Height in scan lines of the image
+
+  word  3 Alignment 0  ImagePtr   Offset in VidRAM of this aligned image
+  +--word  4              MaskPtr    Offset (within this structure's DS) of
+  |   .                               alignment masks
+  |   .
+  |   .
+  |  word  9 Alignment 3  ImagePtr   Offset in VidRAM of this aligned image
+  +|--word 10              MaskPtr    Offset (within this structure's DS) of
+  ||                                   alignment masks
+  ||
+  |+->byte 21 (word 11)                -------+-- Image masks for alignment 0
+  |   .                                       |
+  |   .                                       |
+  |   byte  21 + ImageWidth*ImageHeight  -----+
+  |
+  |   .
+  |   . (similaly for alignments 1 - 2 )
+  |   .
+  |
+  +-->byte  21 + 3*ImageWidth*ImageHeight + 1-+-- Image masks for alignment 3
+  .                                       |
+  .                                       |
+  byte  21 + 4*(ImageWidth*ImageHeight) --+
+  .
+  .
+  << Similarly for alignments 2 and 3 >>
+  .
+  .
+  byte 21 + 4*(ImageWidth*ImageHeight)
+  -------------
+  (And dont forget the corresponding data in video ram)
+
+You can see for yourself the complexity of this bitmap format. The image
+is stored in video ram in its 4 different alignments with pointers to these
+alignments in the VBM. Similarly there are 4 alignments of the corresponding
+masks within the VBM itself (towards the end). The mask bytes contain the
+plane settings for the corresponding video bytes so that one memory move can
+move up to 4 pixels at a time (depending on the mask settings) using the
+VGA's latches, theoretically giving you a 4x speed improvement over
+conventional blits like the ones implemented in XPBITMAP. In actual fact
+its anywhere between 2 and 3 due to incurred overheads.
+
+These bitmaps are more difficult to store in files than PBM'S and CBM's but
+still posible with a bit of work, so do not dismiss these as too difficult
+to use. Consider all the bitmap formats carefully before deciding on which
+to use. There may even be situations that a careful application of all three
+types would be most effective ie. compiled bitmaps for Background tiles and
+the main game character (which never need clipping), VRAM based bitmaps for
+the most frequently occuring (oponent, alien etc) characters which get
+clipped as they come into and leave your current location and planar bitmaps
+for smaller or less frequently encountered characters.
+
+  xmakevbm
+  --------
+
+  function xmakevbm( var lbm; var VramStart : word) : pointer;
+
+  Create the VBM from the given linear bitmap and place the image alignments
+  in video ram starting at the offset in the variable pointed to by
+  VramStart. VramStart is then updated to point to the next free VRAM byte
+  (just after the last byte of the image alignments). Usually you will point
+  VramStart to NonVisualOffs.
+
+    lbm         Pointer to the input linear bitmap
+    VramStart   Pointer to variable containing Offset of first free VRAM byte
+
+    xputmaskedvbm
+    -------------
+
+    function xputmaskedvbm( X, Y, ScrnOffs : word; var VBitmap) : integer;
+
+    Draw a VRAM based bitmap at (X,Y) relative to the screen with starting
+    offset ScrnOffs.
+
+    Returns 1 if clipped image is fully clipped (ie no portion of it
+    appears on the screen) otherwise it returns 0
+
+    xputmaskedvbmclipx
+    ------------------
+    xputmaskedvbmclipy
+    ------------------
+    xputmaskedvbmclipxy
+    -------------------
+
+    Clipping versions of xputmaskedvbm.
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ XBM2 : EXTRA PROCEDURES AND FUNCTIONS                                     บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+  LINEAR BITMAPS
+  
+  Linear bitmaps have the following structure:
+
+  byte 0                 The bitmap width in pixels  range 1..255
+  byte 1                 The bitmap height in rows   range 1..255
+  byte 2..n              The width*height bytes of the bitmap
+
+  xpbmtobm
+  --------
+  function xpbmtobm( var sourcepbm, destbm ) : integer;
+
+  This function converts a bitmap in the planar format to the linear format
+  as used by xcompilebitmap.
+
+  WARNING: the source and destination bitmaps must be pre - allocated
+
+  NOTE: This function can only convert planar bitmaps that are suitable.
+  If the source planar bitmap's width (per plane) is >= 256/4
+  it cannot be converted. In this situation an error code
+  BMWIDTHERROR. On successful conversion 0 is returned.
+
+  xbmtopbm
+  --------
+  function xbmtopbm( var sourcepbm, destbm ) : integer;
+
+  This function converts a bitmap in the linear format as used by
+  xcompilebitmap to the planar formap.
+
+  WARNING: the source and destination bitmaps must be pre - allocated
+
+  NOTE: This function can only convert linear bitmaps that are suitable.
+  If the source linear bitmap's width is not a multiple of 4
+  it cannot be converted. In this situation an error code
+  BMWIDTHERROR. On successful conversion 0 is returned.
+
+  xscale
+  ------
+  Procedure XScale( DestX, DestY, DestWidth, DestHeight, ScrnOffs : word;
+		var Bitmap );
+
+  xmaskedscale
+  ------------
+  Procedure XMaskedScale( DestX, DestY, DestWidth, DestHeight, ScrnOffs : word;
+		var Bitmap );
+
+  These two procedures put a linear bitmap in VRAM, scaling it to DestWidth
+  and DestHeight size, at position DestX,DestY at offset ScrnOffs.
+  I have tried to write similar functions to work with PBMs, but they are
+  slower, because of the way PBMs are organised. If you have a PBM you want to
+  scale, just convert it to an LBM using pbmtobm.

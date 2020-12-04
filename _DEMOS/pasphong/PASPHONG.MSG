@@ -1,0 +1,16 @@
+─ NEWPAS97 ────────────────────────────────── New PASss from Nice Src of 1997 ─
+ Msg  : 59 of 311                            Addr                        Date
+ From : Yury Uralsky                  2:5023/16             27.06.97
+ Subj : Phong-Shading
+───────────────────────────────────────────────────────────────────────────────
+Hello All.
+
+Вроде просили тут ...
+Фонг на паскале. 
+Медленно, конечно, но в целях обучения пойдет ;)
+
+Yury
+
+--- GoldED/W32 2.51.A0901+
+ * Origin: In the beginning there was code ... (2:5023/16)
+

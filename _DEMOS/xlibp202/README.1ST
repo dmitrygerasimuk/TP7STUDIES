@@ -1,0 +1,60 @@
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ                                                                           บ
+บ        XLIB v2.0 - Graphics Library for Borland/Turbo Pascal 7.0          บ
+บ                                                                           บ
+บ               Tristan Tarrant - tristant@cogs.susx.ac.uk                  บ
+บ                                                                           บ
+ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+บ                                                                           บ
+บ                                 Credits                                   บ
+บ                                                                           บ
+บ                             Themie Gouthas                                บ
+บ                                                                           บ
+บ                            Matthew MacKenzie                              บ
+บ                                                                           บ
+บ                             Tore Bastiansen                               บ
+บ                                                                           บ
+บ                                 Andy Tam                                  บ
+บ                                                                           บ
+บ                               Douglas Webb                                บ
+บ                                                                           บ
+บ                              John  Schlagel                               บ
+บ                                                                           บ
+ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+บ                                                                           บ
+บ           I informally reserve all rights to the code in XLIB             บ
+บ       Rights to contributed code is also assumed to be reserved by        บ
+บ                          the original authors.                            บ
+บ                                                                           บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ DISCLAIMER                                                                บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+  This library is distributed AS IS. The author/s specifically disclaim any
+  responsibility for any loss of profit or any incidental, consequential or
+  other damages.
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ WHAT THIS PACKAGE IS                                                      บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+  XLibPas v2.0 is a set of libraries and utilities that allow you to use some
+  extended features of the standard VGA adapter which are not exploited in 
+  mode 13h. The most important features are :
+    - Use of all of the 256k of standard VGA memory
+    - Several tweaked resolutions, all in 256 colours
+    - Multiple pages, double- and triple-buffering, page flipping and panning
+    - Split screen
+    - Planar, Video and Compiled bitmaps
+    - Drawing procedures (line,circle,pixel,boxes,filling,polygons)
+    - Text handling supporting user fonts
+    - Archiving and compression
+    - GIF/BMP encoding and decoding
+    - Bitmap scaling
+    - Virtual VSync handler
+    - Mouse routines
+    - Palette handling
+    - ...and (at long last) Protected Mode (experimental)
+

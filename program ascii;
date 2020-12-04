@@ -1,0 +1,16 @@
+program ascii;
+
+    procedure AsciiTable;
+        var i : Byte;
+        begin
+             clrscr;
+             for i:=1 to 255 do
+             begin
+                  write(i,'=',chr(i),' ');
+             end;
+             readkey;
+        end;
+
+begin
+ AsciiTable;
+ end.

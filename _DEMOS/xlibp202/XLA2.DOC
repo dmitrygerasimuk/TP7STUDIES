@@ -1,0 +1,205 @@
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ                                                                           บ
+บ        XLIB v2.0 - Graphics Library for Borland/Turbo Pascal 7.0          บ
+บ                                                                           บ
+บ               Tristan Tarrant - tristant@cogs.susx.ac.uk                  บ
+บ                                                                           บ
+ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+บ                                                                           บ
+บ                                 Credits                                   บ
+บ                                                                           บ
+บ                             Themie Gouthas                                บ
+บ                                                                           บ
+บ                            Matthew MacKenzie                              บ
+บ                                                                           บ
+บ                             Tore Bastiansen                               บ
+บ                                                                           บ
+บ                                 Andy Tam                                  บ
+บ                                                                           บ
+บ                               Douglas Webb                                บ
+บ                                                                           บ
+บ                              John  Schlagel                               บ
+บ                                                                           บ
+ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+บ                                                                           บ
+บ           I informally reserve all rights to the code in XLIB             บ
+บ       Rights to contributed code is also assumed to be reserved by        บ
+บ                          the original authors.                            บ
+บ                                                                           บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ DISCLAIMER                                                                บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+  This library is distributed AS IS. The author/s specifically disclaim any
+  responsibility for any loss of profit or any incidental, consequential or
+  other damages.
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ XLA2 UNIT - Compression and archiving                                     บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+The XLA2 unit implements a set of procedures and functions to handle XLA files.
+XLA stands for XLib Archive and is a very useful and powerful tool.
+Suppose you just have written a game with XLib that uses many sprites, fonts
+and bitmaps and you are loading all these resources from disk. This means the
+program's directory is cluttered with lots of files which may take up a lot
+of space. With XLA you can pack all of these files into one and extract them
+from within your program at runtime. XLA files are created with the XLARC
+program distributed with XLibPas2. Files inside an XLA file can be stored in
+two ways (for now) : uncompressed and compressed using a variation of the LZS
+algorithm. When extracting them, though, you don't have to worry about their
+format : the XLA2 routines will handle all the uncompression/unpacking for you.
+
+The structure of an XLA file is as follows :
+
+  Header
+    signature: array[0..3] of char= 'XLAS'
+    posdir   : longint            = The position of the archive's directory
+				    which is at the end of the file.
+    sizedir  : longint            = The number of files stored in the archive
+
+    Files      : lots of bytes      = The files, stored sequentially
+	       :
+	       :
+	       :
+
+    Directory : array[1..sizedir] of name : array[0..11] of char= The name 
+		  of the file
+    posfile  : position of the file in the archive
+    sizefile : the original size of the file
+    sizecomp : the compressed size of the file
+    algorithm: 0 ( No compression ) 1 ( LZS compression )
+
+XLA2 defines the following constants :
+
+  None = 0;    ( No compression )
+  LZS  = 1;    ( LZS compression )
+  Best = 8;    ( Best compression : not used yet )
+
+
+In order for your program to receive the extracted data or send the raw data
+to the XLA routines, you have to set up two procedural variables.
+
+  XLAOutProc : procedure( var Data; size : word );
+  XLAInProc  : procedure( var Data; size : word; var actual : longint );
+
+XLAOutProc will be called by the extraction routines. Data is a buffer
+containing the extracted data and size is the size of the buffer in bytes.
+The maximum size of the data buffer can be 64K, but if the extracted file is
+bigger than that, then XLAOutProc will be called several times and your
+routine should be able to handle this data.
+XLAInProc will be called by the encoding routines. Your routine should put
+size bytes of data in the Data buffer. If you can't provide the requested
+amount of data just put the amount of bytes you copied in actual. When there
+are no more bytes to compress just return a 0 in actual.
+
+Procedures and Functions
+
+  Function  XLZSSave( FName : string ) : boolean;
+  -----------------------------------------------
+
+  Creates a standalone file with name FName. Calls XLAInProc. Returns true
+  if successful, false otherwise.
+
+  Function  XLZSLoad( FName : string ) : boolean;
+  -----------------------------------------------
+
+  Loads a standalone file with name FName. Calls XLAOutProc. Returns true if
+  successful, false otherwise.
+
+
+  function  XCreateArchive( filename : string ) : boolean;
+  --------------------------------------------------------
+
+  Creates an XLA file for writing. Writes a template header to disk.
+  Returns true if successful.
+
+
+  function  XOpenArchive( filename : string ) : boolean;
+  ------------------------------------------------------
+
+  Opens an already existing XLA file for reading. Reads in the archive's
+  directory. Returns true if successful.
+
+  function  XUpdateArchive( filename : string ) : boolean;
+  --------------------------------------------------------
+
+  Opens an already existing XLA file for writing/reading. Reads in the archive's
+  directory. Returns true if successful.
+
+  function  XCloseArchive : boolean;
+  ----------------------------------
+
+  This function has to be called when the program doesn't need to access the
+  XLA file any more. If the archive was opened with XCreateArchive or
+  XUpdateArchive the the XEndArchive function must be called instead,
+  otherwise the XLA file will be corrupt. Frees all the memory allocated to
+  the uncompression routines. Returns true if successful.
+
+  function  XEndArchive : boolean;
+  --------------------------------
+
+  This function has to be called when the program has finished creating or
+  updating an archive. It writes the archive's directory at the end of the
+  file and updates the header to reflect any changes. Frees all memory
+  allocated to the compression routines. Returns true if successful.
+
+  function  XLAGet( fname : string ) : boolean;
+  ---------------------------------------------
+
+  Extracts a file from the currently open archive. Calls XLAOutProc.
+  Returns true if successful.
+
+  function  XLAPut( fname : string; mode : word ) : boolean;
+  ----------------------------------------------------------
+
+  Adds a file to the currently open archive. Calls XLAInProc. Returns true
+  if successful. Mode can be either None or LZS.
+
+  procedure XPrintDir;
+  --------------------
+
+  Displays a formatted list of all the files contained in the archive.
+
+
+  function  XLAGetFileInfo( fname : string; var origsize, compsize : longint;
+			    mode : word ) : boolean;
+  ---------------------------------------------------------------------------
+
+  Collects information about a particular file in the archive. Origsize
+  contains the length of the uncompressed file. Compsize contains the size of
+  the compressed file. Mode contains the algorithm used to store the file.
+  Returns true if successful.
+
+
+  function  XLAFindFirst( pattern : string; var match : string ) : boolean;
+  -------------------------------------------------------------------------
+
+  Searches through the archive's directory for the first file matching pattern.
+  and returns it in match. pattern can contain * wildcards in the standard DOS
+  notation. It doesn't support ? wildcards. Returns true if successful.
+
+  function  XLAFindNext( var match : string ) : boolean;
+  ------------------------------------------------------
+
+  Finds the next file matching the pattern given in a previous call to
+  XLAFindFirst and returns it in match. Returns true if successful.
+
+  To better understand how these procedures/functions are used, examine the
+  source for xlarc.
+
+WARNING!!!
+  The XLA utilities don't allow you to update files that are already inside
+an archive, because this would require the creation of a temporary file.
+
+Notes:
+
+  If you know anything about the WAD file structure for iD's DOOM then you 
+should already have a rough idea of how this unit handles things. The major 
+difference between XLAs and WADs is that the former can be compressed while the 
+latter can't. WADs, though, have one notable feature : they can be patched with 
+newer versions of the files in the archive. If there is a demand for this kind
+of thing I will include it in the next release.
+

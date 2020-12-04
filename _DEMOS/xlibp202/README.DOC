@@ -1,0 +1,179 @@
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ                                                                           บ
+บ        XLIB v2.02 - Graphics Library for Borland/Turbo Pascal 7.0          บ
+บ                                                                           บ
+บ               Tristan Tarrant - tristant@cogs.susx.ac.uk                  บ
+บ                                                                           บ
+ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+บ                                                                           บ
+บ                                 Credits                                   บ
+บ                                                                           บ
+บ                             Themie Gouthas                                บ
+บ                                                                           บ
+บ                            Matthew MacKenzie                              บ
+บ                                                                           บ
+บ                             Tore Bastiansen                               บ
+บ                                                                           บ
+บ                                 Andy Tam                                  บ
+บ                                                                           บ
+บ                               Douglas Webb                                บ
+บ                                                                           บ
+บ                              John  Schlagel                               บ
+บ                                                                           บ
+ฬอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน
+บ                                                                           บ
+บ           I informally reserve all rights to the code in XLIB             บ
+บ       Rights to contributed code is also assumed to be reserved by        บ
+บ                          the original authors.                            บ
+บ                                                                           บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ DISCLAIMER                                                                บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+	This library is distributed AS IS. The author/s specifically disclaim any
+	responsibility for any loss of profit or any incidental, consequential or
+	other damages.
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ IMPORTANT NOTICE                                                          บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+	Hi Xlib users, this is v2.02 of my port of XLib to Turbo/Borland Pascal.
+	I would like to state a few things before you start using this package :
+	
+	I have ported all the useful stuff from Xlib for C v6.0, and added a few
+	things of my own, apart from cleaning up the code and making it more
+	Pascal-friendly.
+
+	If there is any code you have written that you think is worth including in
+	the next release, don't hesitate to send it to me and you will receive due
+	credit.
+
+	I have had a look at the new Xlib for C (6.11+) and the only addition it
+	has is support for Windoze. What a pile o' shit. I am not going to add that
+	feature (bug?) in Xlib for TP/BP.
+
+	Sorry if this isn't up to your expectations but, hey, don't forget : XLIB
+	is a user supported library, so send me your code and let's write the
+	ultimate XMode game !!!
+
+	Share and enjoy.
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ BUGS AND REVISIONS                                                        บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+	The SplitScreen routines weren't handled by the Virtual VSync handler,
+	sometime resulting in the program waiting twice for a vsync, and causing
+	a choppy effect when scrolling the split screen.
+	Now the mouse handler uses the VVH to redraw the pointer
+	when necessary. Unfortunately it takes a bit too long and, if you are
+	updating the whole palette AND using the mouse at the same time, you'll
+	notice that the tip of the pointer disappears for an instant when it's at
+	the top of the screen.
+	The palette-updating part of the VVH has been sped up a bit.
+
+	I have implemented 32-bit compiled bitmaps, even though they are bigger and
+	(on my machine) slightly slower than normal CBMs. Maybe on VLB/PCI machines
+	this isn't the case.
+
+	Protected mode is still at an experimental stage, but it can do quite a few
+	things already.
+	Things that don't work (or are a bit odd) in protected mode are :
+
+	- The Virtual VSync handler (self-modification works, but the rest doesn't)
+	- VBM's on my machine are faster in pmode (??!?!?!)
+	- I assume that the ROM font is at segment 0C000h because that's where the
+			Video BIOS usually is. I have tested it on a Paradise (WD90c30), a
+			Cirrus Logic (CL-54xx) and a Trident (9000i) with no problems. If you
+			find some board that doesn't work please report it (though I don't know
+			why you'd want to use ROM BIOS fonts anyway :-)
+	- The palette scrolling in the XLIBDEMO is tooooooo slow...
+
+	If you find a way of fixing these, or if you find more routines that don't
+	like protected mode, email me please.
+
+Release v2.01
+
+	XConvert was broken. Fixed.
+	XLArc and XLA2 were broken in DPMI. Fixed.
+	Added file viewing in XLArc.
+	If you want to know how to do CBMs in DPMI, read BLITDEMO.PAS.
+	Makefile fixed.
+	Bugfixes here and there.
+
+Release v2.02
+
+	Fixed clipping code. Now all clipping routines should not crash when 
+	displaying bitmaps that were allocated in areas of memory other than the
+	data segment.
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ NOTES                                                                     บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+	A good idea for debugging programs that use XLib is to use Colin Buckley's
+	UNCHAIN v2.1 program. The code for saving the screen information is built
+	in the xsetmode function, but if you don't use UNCHAIN it should not make
+	any difference.
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ APPLICATIONS THAT USE XLIB FOR TP/BP                                      บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+	I have decided to start a list of applications that have been written using
+	a version of XLibPas, and where they can be found. Please mail me any
+	additions.
+
+
+	Chromatiks - The world's first multi-group music disk. Coordinated by
+		Trixter (Jim Leonard).
+
+			Site      : wasp.eng.ufl.edu
+			Directory : /pub/msdos/demos/music/disks
+			Filename  : chromat*.zip
+
+	WadManager v1.50 - A GUI WAD manager for DOOM. Written by Tristan Tarrant.
+
+			Site      : infant2.sphs.indiana.edu
+			Directory : /pub/doom/misc
+			Filename  : wm150.zip
+
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ CREDITS AND THANKS                                                        บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+
+		Michael Abrash - The guy who started it all in the first place
+
+		Themie Gouthas - The original maintainer of the XLIB for C library
+
+		Matthew McKenzie - Compiled blits, circles and clipping. What more could
+			I say
+
+		Tore Bastiansen - For the Virtual VSync handler : a true masterpiece
+
+		Andy Tam - For the LZS encoding/decoding routines
+
+		Douglas Webb - For collecting loads of compression algorithms
+
+		John Schlagel - For the bitmap scaling code
+
+		iD Software - For giving me inspiration for XLAs
+
+		Jim Leonard - For beta-testing this beast
+
+		Colin Buckley - For his UNCHAIN program which made debugging hours so much
+			easier
+
+		Kai Rohrbacher - Author of ANIVGA for including so many fonts in his most
+			excellent library
+
+		Paul Silver and Aarron Shaughnessy - For letting me test this code on 
+			their machines
+			
+		Borland - For their excellent compiler suite
+
+		Anybody on USENET who sent me suggestions
+

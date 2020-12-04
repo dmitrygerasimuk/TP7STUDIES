@@ -1,0 +1,865 @@
+
+
+        PASCAL MOUSE v1.5
+        Mouse Interface for Turbo/Borland Pascal 6.0/7.0
+
+        Copyright (c) 1996-1997 Horatiu A. Tanescu
+        June 17 1997
+
+        MOUSE.DOC: Programming Manual
+
+
+
+  CONTENTS
+
+  Using the mouse unit
+  I.  Introduction
+    I.1.  Resetting the mouse
+    I.2.  Showing and hiding the mouse
+    I.3.  Reading the mouse coordinates and buttons state
+    I.4.  Positioning the mouse
+  II.  Types and variables
+    II.1. Types
+    II.2. Variables
+  III.  Procedures and functions
+
+
+  Using the mouse unit
+ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
+
+  Just include Mouse in your uses clause.
+
+
+ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
+  I.  Introduction
+ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
+
+
+  I.1.  Resetting the mouse
+
+    In order to use the mouse your application requires an installed mouse
+    driver. PASCAL MOUSE supports any Microsoft compatible mouse driver. If
+    you include the Mouse unit in your "uses" clause a detection routine will
+    be automatically run at the beginning of the program ( the InitMouse
+    procedure ). This routine sets the MouseInstalled variable to True if a
+    mouse driver is found, otherwise it is set to False.
+
+    Check the value stored in MouseInstalled before using any mouse routine.
+    If a mouse driver is not installed the mouse routines will still execute
+    but they will not properly work.
+
+
+  I.2.  Showing and hiding the mouse
+
+    To make the mouse appear on the screen call ShowMouse.
+    To hide it call HideMouse. Hiding the mouse doesn't disable it, all
+    mouse routines will remain fully operational.
+
+    Any call to HideMouse decrements an internal counter. Any call to
+    ShowMouse increments it unless it is 0. The mouse appears on the
+    screen only when this internal counter becomes 0. The GetMouseState
+    function returns the value of this internal counter.
+
+    To show the mouse after you called HideMouse more than once you can use
+    a statement like this:
+
+      while GetMouseState <> 0 do ShowMouse;
+
+    InitMouse and SoftwareReset always set MouseState to -1 so a single
+    call to ShowMouse will make the mouse cursor visible.
+
+    You should hide the mouse cursor before making any changes to the screen
+    beneath the cursor so that old values are not restored to the screen.
+
+
+  I.3.  Reading the mouse coordinates and buttons state
+
+    The MouseX and MouseY variables store the current mouse location (in
+    virtual coordinates). In text modes you need to convert the values from
+    MouseX and MouseY to be related to the character position on the screen.
+    Use the TextX and TextY functions for this purpose.
+
+    The boolean variables LeftButtonPressed, CenterButtonPressed and
+    RightButtonPressed store the current state of the mouse buttons.
+
+    The ReadMouse updates these variables each time it is called. You
+    should call it periodically to have the correct information about the
+    mouse position and state all the time. An alternative is to define an
+    event handler that will be called when a mouse event occurs. See
+    SetMouseHandler for more information.
+
+
+  I.4.  Positioning the mouse
+
+    You can place the mouse cursor at a specified position on the screen
+    using MouseTo. This procedure requires virtual coordinates. In text
+    modes you can convert character-relative coordinates to virtual
+    coordinates using VirtualX and VirtualY.
+
+    MouseTo automatically updates MouseX and MouseY.
+
+
+ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
+  II.  Types and variables
+ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
+
+
+  II.1. Types
+
+  - TGraphicCursor defines the shape of the graphic mouse cursor. It is used
+    by SetGraphicCursor.
+
+    type
+      TGraphicCursor = record
+        HotSpot : TPoint;
+        Masks   : array [0..1, 0..15] of Word;
+      end;
+
+    The hot spot specifies the pixel location inside the graphical mouse
+    image where all mouse activity is tied to. The value is relative to the
+    top left corner of the mouse image.
+
+    Masks contains the screen and the cursor bitmaps.
+
+    Refer to a mouse documentation for more information.
+
+
+  II.2. Variables
+
+  - const
+      MouseInstalled : Boolean = False;
+
+    Set True by InitMouse and SoftwareReset if a mouse driver is installed;
+    otherwise set False. Use this variable to determine whether mouse support
+    is available.
+
+  - var
+      ButtonCount : Integer;
+
+    ButtonCount holds the number of buttons on the mouse (1, 2 or 3).
+    A value of 0 indicates that the number of buttons is other than two.
+    A value of $FFFF indicates two buttons. ButtonCount is updated by
+    InitMouse and SoftwareReset.
+
+  - var
+      RightButtonPressed  : Boolean;
+      LeftButtonPressed   : Boolean;
+      CenterButtonPressed : Boolean;
+
+    Contain the current state of the mouse buttons. They are updated by
+    ReadMouse, GetMouseDown, GetMouseUp, MouseTo, SetMouseXRange,
+    SetMouseYRange and SetMouseRange ( the last four procedures automatically
+    call ReadMouse ).
+
+  - var
+      MouseX : Integer;
+      MouseY : Integer;
+
+    Contains the current position of the mouse in virtual coordinates.
+    Updated by ReadMouse, GetMouseDown, GetMouseUp, MouseTo, SetMouseXRange,
+    SetMouseYRange and SetMouseRange ( the last four procedures automatically
+    call ReadMouse ).
+
+
+ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
+  III.  Procedures and functions
+ƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ
+
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › InitMouse function ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function InitMouse : Integer;
+
+    Resets the mouse driver. Sets MouseInstalled to True if a mouse driver is
+    installed, or to False if a mouse driver could not be found. Sets
+    ButtonCount to the number of buttons on the mouse.
+
+    The driver routine sets the internal indicator to -1 ( indicates a hidden
+    mouse cursor ), sets the light pen emulation mode on, sets the horizontal
+    mickey ratio to 8 mickeys/second and the vertical mickey ratio to 16
+    mickeys/second and sets the horizontal and vertical range for mouse
+    movements to the whole screen.
+
+    Returns the value of the MouseInstalled variable.
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › ShowMouse procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure ShowMouse;
+
+    Increments the mouse driver internal counter unless it is 0. The mouse
+    appears on the screen only when this internal counter becomes 0.
+
+    See chapter I.2 for more information.
+
+    See also: HideMouse
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › HideMouse procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure HideMouse;
+
+    Decrements the mouse driver internal counter. The mouse appears on the
+    screen only when this internal counter becomes 0.
+
+    See chapter I.2 for more information.
+
+    See also: ShowMouse
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › ReadMouse procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure ReadMouse;
+
+    Reads the position of the mouse and the state of the buttons.
+    Updates MouseX and MouseY with the current position of the mouse.
+    Updates RightButtonPressed, LeftButtonPressed and CenterButtonPressed to
+    reflect the state of the buttons.
+
+    See chapter I.3 for more information.
+
+    See also: MouseTo
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › MouseTo procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure MouseTo(X, Y : Integer);
+
+    Places the mouse cursor at the specified position. X and Y are truncated
+    to the next lower multiple of the cell size.
+
+    Automatically calls ReadMouse.
+
+    See chapter I.4 for more information.
+
+    See also: ReadMouse
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › GetMouseDown function ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function GetMouseDown(Button : Integer; var LastX, LastY : Integer) : Integer;
+
+    Returns the number of times a button was pressed since the last call.
+
+    Button can be one of the following:
+      0   The left button
+      1   The right button
+      2   The center button
+
+    (LastX, LastY) is the position of the mouse when it was last pressed.
+
+    Also updates RightButtonPressed, LeftButtonPressed and
+    CenterButtonPressed to reflect the current state of the buttons.
+
+    See also: GetMouseUp
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › GetMouseUp function ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function GetMouseUp(Button : Integer; var LastX, LastY : Integer) : Integer;
+
+    Returns the number of times a button was released since the last call.
+
+    Button can be one of the following:
+      0   The left button
+      1   The right button
+      2   The center button
+
+    (LastX, LastY) is the position of the mouse when it was last released.
+
+    Also updates RightButtonPressed, LeftButtonPressed and
+    CenterButtonPressed to reflect the current state of the buttons.
+
+    See also: GetMouseDown
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › SetMouseXRange procedure ﬁ (new in version 1.5)
+  › SetMouseYRange procedure ﬁ (new in version 1.5)
+  › SetMouseRange  procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure SetMouseXRange(MinX, MaxX : Integer);
+    procedure SetMouseYRange(MinY, MaxY : Integer);
+    procedure SetMouseRange(MinX, MinY, MaxX, MaxY : Integer);
+
+    Sets the horizontal and vertical range for mouse movements. After
+    this call the mouse movements will be limited to the region
+    (MinX, MinY, MaxX, MaxY).
+
+    If the mouse cursor is outside this zone it will be moved inside,
+    near the border.
+
+    Automatically calls ReadMouse.
+
+    See also: GetMouseMinX, GetMouseMinY, GetMouseMaxX, GetMouseMaxY,
+              GetMouseRange, HideMouseIn
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › SetGraphicCursor procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure SetGraphicCursor(NewShape : TGraphicCursor);
+
+    Defines the shape of the graphic mouse cursor.
+
+    The TGraphicCursor type is described in chapter II.1.
+
+    See also: GetMouseHotSpotX, GetMouseHotSpotY, DefineGraphicCursor
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › SetTextCursor procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure SetTextCursor(ScreenMask, CursorMask : Word);
+
+    Defines the mouse cursor appearance in text modes.
+
+    The char and attribute data at the current screen position is ANDed with
+    the screen mask and then XORed with the cursor mask.
+
+    See also: SetHardwareCursor, GetTextCursor
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › SetHardwareCursor procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure SetHardwareCursor(FirstLn, LastLn : Word);
+
+    Causes the existing hardware cursor to be used as the text mouse cursor.
+
+    Also defines the shape of the hardware cursor. FirstLn is the start scan
+    line and LastLn is the end scan line.
+
+    See also: SetTextCursor, GetHardwareCursor
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › GetMouseMove procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure GetMouseMove(var X, Y : Integer);
+
+    Returns the number of mickeys moved since last call. A mickey is the
+    smallest increment the mouse can sense.
+
+    X returns the number of mickeys moved horizontally. A positive value
+    indicates a move right and a negative value indicates a move left.
+
+    Y returns the number of mickeys moved vertically. A positive value
+    indicates a move up and a negative value indicates a move down.
+
+    See also: ReadMouse
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › SetMouseHandler procedure ﬁ (new in version 1.5)
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure SetMouseHandler(Mask : Integer; Handler : Pointer);
+
+    Defines an event handler that will be called when a special event occurs
+    (defined by the event mask).
+
+    The structure of the mask is:
+      bit 0 set => call if mouse moves
+      bit 1 set => call if left button pressed
+      bit 2 set => call if left button released
+      bit 3 set => call if right button pressed
+      bit 4 set => call if right button released
+      bit 5 set => call if middle button pressed
+      bit 6 set => call if middle button released
+
+    When the event handler is called it is passed the following values:
+      AX = condition mask (same bit assignments as call mask)
+      BX = button state
+      CX = cursor column
+      DX = cursor row
+      SI = horizontal mickey count
+      DI = vertical mickey count
+
+    To remove the handler call SetMouseHandler with Mask set to 0.
+
+    See also: ExchangeMouseHandler, SetAlternateMouseHandler,
+              GetAlternateMouseHandler
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › SetLightPenEmulation procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure SetLightPenEmulation(LightPen : Boolean);
+
+    Enables or disables the light pen emulation mode.
+
+    See also: InitMouse
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › SetMickeyRatio procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure SetMickeyRatio(X, Y : Integer);
+
+    Defines the mickey/pixel ratio.
+
+    X is the number of mickeys per 8 pixels horizontally ( default 8 ).
+    Y is the number of mickeys per 8 pixels vertically ( default 16 ).
+
+    See also: InitMouse, GetMouseSensitivity
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › HideMouseIn procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure HideMouseIn(X1, Y1, X2, Y2 : Integer);
+
+    Defines a region where the mouse cursor will be hidden until you
+    explicitly turned it on again.
+
+    See also: ShowMouse, HideMouse
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › DefineGraphicCursor procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function DefineGraphicCursor(Width, Height, HotSpotX, HotSpotY : Byte;
+                                 Masks : Pointer) : Integer;
+
+    Defines a large graphic cursor block.
+
+    Width is cursor width in words.
+    Height is the number of rows in cursor.
+    HotSpotX is the horizontal hot spot ( -16 to 16 ).
+    HotSpotY is the vertical hot spot ( -16 to 16 ).
+    Masks contains the screen and the cursor bitmaps.
+
+    See also: GetMouseHotSpotX, GetMouseHotSpotY, SetGraphicCursor
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › SetMouseThreshold procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure SetMouseThreshold(Threshold : Integer);
+
+    Sets the mouse double speed threshold. When the mouse speed exceeds
+    threshold, the mouse moves twice faster ( with double speed ).
+
+    Threshold is measured in mickeys per second. A mickey is the smallest
+    increment the mouse can sense. The default value is 0, representing
+    64 mickeys/second.
+
+    See also: GetMouseSensitivity, SetMouseSensitivity, SetMickeyRatio
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › ExchangeMouseHandler function ﬁ (new in version 1.5)
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function ExchangeMouseHandler(Mask : Integer; Handler : Pointer; var OldMask : Integer) : Pointer;
+
+    Swaps the current mouse event handler with a new one and returns the
+    old handler's address and event mask.
+
+    For more information see SetMouseHandler.
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › DriverStateSize function ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function DriverStateSize : Integer;
+
+    Returns the size of the buffer needed to store the mouse driver state.
+
+    See also: SaveDriverState, RestoreDriverState
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › SaveDriverState procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure SaveDriverState(Size : Integer; var Buf);
+
+    Saves the mouse driver state into a buffer.
+    Use DriverStateSize to determine the required size of the buffer.
+
+    See also: DriverStateSize, RestoreDriverState
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › RestoreDriverState procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure RestoreDriverState(Size : Integer; Buf : Pointer);
+
+    Restores the mouse driver state from a buffer.
+    Use with DriverStateSize and SaveDriverState.
+
+    Some mouse drivers check the values in the saved state based using the
+    current video mode, so you should restore the video mode before
+    calling RestoreDriverState.
+
+    See also: DriverStateSize, SaveDriverState
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › SetAlternateMouseHandler function ﬁ (new in version 1.5)
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function SetAlternateMouseHandler(Mask : Integer; Handler : Pointer) : Boolean;
+
+    Defines an alternate event handler that will be called when a special
+    event occurs (defined by the event mask). Up to three handlers can be
+    defined by separate calls to this function.
+
+    To remove a handler call SetAlternateMouseHandler with mask set to 0
+    and with the address of the handler.
+
+    On success returns a non-zero value.
+
+    For more information see SetMouseHandler.
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › GetAlternateMouseHandler function ﬁ (new in version 1.5)
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function  GetAlternateMouseHandler(Mask : Integer) : Pointer;
+
+    Attempts to find a user event handler (defined by SetAlternateMouseHandler)
+    whose call mask matches a given mask.
+
+    On success returns the address of the handler, otherwise it returns a nil
+    pointer.
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › SetMouseSensitivity procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure SetMouseSensitivity(Horiz, Vert, Threshold : Integer);
+
+    Sets the mouse sensitivity and the double speed threshold.
+
+    See also: GetMouseSensitivity, SetMouseThreshold, SetMickeyRatio
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › GetMouseSensitivity procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure GetMouseSensitivity(var Horiz, Vert, Threshold : Integer);
+
+    Returns the mouse sensitivity and the double speed threshold.
+
+    See also: SetMouseSensitivity, SetMouseThreshold, SetMickeyRatio
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › SetMouseInterruptRate procedure ﬁ (new in version 1.5)
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure SetMouseInterruptRate(Rate : Integer);
+
+    Sets mouse interrupt rate.
+
+    Rate can be one of the following:
+      00h no interrupts allowed
+      01h 30 per second
+      02h 50 per second
+      03h 100 per second
+      04h 200 per second
+
+    Values greater than 4 may cause unpredictable driver behaviour.
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › SetMousePage procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure SetMousePage(const Page : Integer);
+
+    Sets the display page number for the mouse cursor.
+
+    See also: GetMousePage
+
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › GetMousePage function ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function GetMousePage : Integer;
+
+    Returns the display page number for the mouse cursor.
+
+    See also: SetMousePage
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › DisableMouse function ﬁ (new in version 1.5)
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function DisableMouse : Pointer;
+
+    Restores vectors for Int 10h and Int 71h (8086) or Int 74h (286/386).
+    Returns the vector for INT 33h before mouse driver was first installed.
+    If you restore Int 33h to this value the driver will be completely
+    disabled.
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › EnableMouse function ﬁ (new in version 1.5)
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function EnableMouse : Boolean;
+
+    Restores vectors for Int 10h and Int 71h (8086) or Int 74h (286/386)
+    which were removed by mouseDisable.
+
+    On success returns True.
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › SoftwareReset function ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function SoftwareReset : Integer;
+
+    Identical to InitMouse, but does not reset the mouse.
+
+    Sets MouseInstalled to True if a mouse driver is installed, or to
+    False if a mouse driver could not be found.
+
+    Sets ButtonCount to the number of buttons on the mouse.
+
+    See also: InitMouse
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › SetMouseLanguage procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure SetMouseLanguage(const Language : Integer);
+
+    Sets the language used by the mouse for its text messages.
+    Only available if you have an international version of the mouse
+    driver ( the US version of the driver ignores this call ).
+
+    Language is one of the following :
+
+      00h English
+      01h French
+      02h Dutch
+      03h German
+      04h Swedish
+      05h Finnish
+      06h Spanish
+      07h Portugese
+      08h Italian
+
+    See also: GetMouseLanguage
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › GetMouseLanguage function ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function GetMouseLanguage : Integer;
+
+    Returns the language used by the mouse for its text messages.
+    Only available if you have an international version of the mouse
+    driver ( the US version of the driver always returns zero ).
+
+    See also: SetMouseLanguage
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › MouseVersion function ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function MouseVersion : Integer;
+
+    Returns the mouse driver version number. The high byte is the major
+    version number, and the low byte is the minor version number.
+
+    On error it returns -1.
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › MouseIRQ function ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function MouseIRQ : Byte;
+
+    Returns the mouse interrupt ( 0 - PS/2, 2 - IRQ2, 3 - IRQ3, ... ,
+    7 - IRQ7 ).
+
+    On error it returns 255.
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › MouseType function ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function MouseType : Byte;
+
+    Returns the mouse type ( 1 - bus, 2 - serial, 3 - InPort, 4 - PS/2,
+    5 - HP ).
+
+    On error it returns 255.
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › MouseCursor function ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function MouseCursor : Byte;
+
+    Returns the mouse cursor type:
+
+     0       Text cursor ( software )
+     1       Text cursor ( hardware )
+     2 or 3  Graphic cursor
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › GetMouseMaxRange procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure GetMouseMaxRange(var MaxX, MaxY : Integer);
+
+    Returns the horizontal and vertical upper range for mouse movements.
+
+    See also: GetMouseMinX, GetMouseMinY, GetMouseMaxX, GetMouseMaxY,
+              GetMouseRange, SetMouseRange
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › GetTextCursor procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure GetTextCursor(var ScreenMask, CursorMask : Word);
+
+    Returns the mouse cursor appearance in text modes.
+
+    The char and attribute data at the current screen position is ANDed with
+    the screen mask and then XORed with the cursor mask.
+
+    See also: GetHardwareCursor, SetTextCursor
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › GetHardwareCursor procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure GetHardwareCursor(var FirstLn, LastLn : Word);
+
+    Returns the shape of the existing hardware cursor if it is used as the
+    text mouse cursor.
+
+    FirstLn is the start scan line and LastLn is the end scan line.
+
+    See also: GetTextCursor, SetHardwareCursor
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › GetMouseState function ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function GetMouseState : ShortInt;
+
+    Returns the mouse driver internal counter.
+
+    See chapter I.2 for more information.
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › GetMouseHotSpotX function ﬁ
+  › GetMouseHotSpotY function ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function GetMouseHotSpotX : Integer;
+    function GetMouseHotSpotY : Integer;
+
+    Return the column and the row of the hot spot. The hot spot specifies
+    the pixel location inside the graphical mouse image where all mouse
+    activity is tied to. The value is relative to the top left corner of
+    the mouse image.
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › GetMouseMinX function ﬁ
+  › GetMouseMinY function ﬁ
+  › GetMouseMaxX function ﬁ
+  › GetMouseMaxY function ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function GetMouseMinX : Integer;
+    function GetMouseMinY : Integer;
+    function GetMouseMaxX : Integer;
+    function GetMouseMaxY : Integer;
+
+  equivalent to
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › GetMouseRange procedure ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    procedure GetMouseRange(var MinX, MinY, MaxX, MaxY : Integer);
+
+    Return the horizontal and vertical range for mouse movements. The
+    mouse can be moved only inside the region (GetMouseMinX, GetMouseMinY,
+    GetMouseMaxX, GetMouseMaxY).
+
+    You can get both the horizontal and vertical range at the same time
+    by calling GetMouseRange.
+
+    See also: SetMouseRange, GetMouseMaxRange
+
+  ‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹‹
+  › TextX    function ﬁ
+  › TextY    function ﬁ
+  › VirtualX function ﬁ
+  › VirtualY function ﬁ
+  ﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂﬂ
+
+  Declaration:
+    function TextX(const X : Integer) : Integer;
+    function TextY(const Y : Integer) : Integer;
+    function VirtualX(const X : Integer) : Integer;
+    function VirtualY(const Y : Integer) : Integer;
+
+    TextX and TextY convert virtual mouse coordinates ( stored by ReadMouse
+    in MouseX and MouseY ) to text coordinates.
+
+    VirtualX and VirtualY convert text coordinates to virtual mouse
+    coordinates ( to be used by MouseTo, SetMouseRange, HideMouseIn ).
+
+    See chapters I.3 and I.4 for more information.
+
+
+---END OF MOUSE.DOC----------------------------------------------------------

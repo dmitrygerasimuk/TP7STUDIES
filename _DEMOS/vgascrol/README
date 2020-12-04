@@ -1,0 +1,61 @@
+
+                   пппл ллпл пппл ллпл ллпл лл ллпл ллпл
+                   лл л лл л лл л лл л лл л лл лл л лл л
+                   лл л лл л лл л лл л лл л лл ллмм ллм
+                   ллпп ллпл ллпм ллпл лл л лл мм л лл м
+                   лл   лл л лл л лл л лл л лл лл л лл л
+                   лл   лл л лл л лл л лл л лл лл л лл л
+                   лл   лл л лл л лл л ллмл лл ллмл ллмл
+
+                     њ p њ r њ e њ s њ e њ n њ t њ s њ
+
+                  кФФ---- љ --ФФФФФФФФФФФФФФФФФ-- -ФФФФФП
+                  |   640x400 image scrolling example   |
+                  РФФФ-- -ФФФФФФФФФ--ФФФФФФФ----- љ --ФФй
+
+
+      Some dood asked me a while ago 'bout some pascal examples
+      for scrolling huge image arrays in normal vga screen.
+      So, i make some.. for him and to test my friends 3d studio.
+      The biggest screen that you can scroll on normal vga card
+      (no svga) is 640x400. Why? cuz you have 64kb free memory
+      in 13h (320x200x256) mode. So, if u use chain-4 mode then
+      one byte plot 4 pixels, you can change what pixels must be
+      then plotted by setting planes.
+      So, if one byte sets 4 pixels then 64kb sets 320*200*4 pixels
+      and here you have 4 graphics pages!
+      But if you want to scroll 4 pages across then also you must
+      change screen width (notmal is 80 cuz 80*4=320) to 160
+      (160*4=640 - screen width). And then you can change position
+      in 640x400 screen by changing start screen offset.
+      So, that is all.. easy isn't it?
+      Sorry 4 that [english] language ;)
+
+      Btw. you can use that piece of code in yer programs but remember
+      to credit or greet me :)
+      You can contact me on irc or mpoli bbs or by mail to :
+  
+      Snail-mail:                        E-mail:
+       Marcin Jaskowiak                  paradise@bachus.umcs.lublin.pl
+       Flat 114, 3 Zarnowiecka Str.
+       30-640 Lublin, Poland
+
+
+
+                            That's all folks!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

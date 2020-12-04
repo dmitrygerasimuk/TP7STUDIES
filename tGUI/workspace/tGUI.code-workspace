@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+    "settings": {
+        "editor.fontSize": 15,
+        "files.exclude": {
+            "**/.TPU": true
+        },
+        "files.encoding": "cp866",
+        "workbench.colorTheme": "Boxy Ocean (dimmed bg)",
+        "window.zoomLevel": 0.2,
+        "editor.cursorStyle": "block",
+        "files.eol": "\r\n"
+    },
+    "editor.fontLigatures": null
+}

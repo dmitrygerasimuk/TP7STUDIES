@@ -1,0 +1,16 @@
+$FILES.LST              ** Archive contents (this file) **
+FILE_ID.DIZ             Short description of this archive
+README.DOC              Readme file
+MOUSE.PAS               Mouse routines (source code)
+MOUSE.TPU               Turbo/Borland 7.0 mouse unit
+MOUSE.DOC               Programming Manual
+DEMOS\BARS.PAS          Example program
+DEMOS\CIRCLES1.PAS      Example program
+DEMOS\CIRCLES2.PAS      Example program
+DEMOS\CURSOR.PAS        Example program
+DEMOS\EYES.PAS          Example program
+DEMOS\SIMPLE.PAS        Example program
+DEMOS\TEXTMOUS.PAS      Example program
+DEMOS\VIDEOMOD.PAS      Example program
+DEMOS\EGAVGA.BGI        BGI file for EGA/VGA displays
+OTHER.PGM               Other software by Horatiu A. Tanescu

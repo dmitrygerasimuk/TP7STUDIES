@@ -1,0 +1,42 @@
+
+        Hey There!
+
+        This code was sitting there taking up precious space on my HD,
+        rotting away, and I suddenly thought "Hey! why not let someone
+        else have it!" so here it is.....
+
+        What does it do??
+
+        Well, basically, it just sets up mode X 320x200x256x4 page mode,
+        it also uses a modplayer to play sound through the devices that
+        that player supports, it then loads 4 raw screens into VGA mem
+        and flips between the pages (my name - so its lame..) and then
+        when you press a key, it changes to a coupla screens that you
+        can switch between by hitting the F (flip) key, you can also
+        quit by pressing Q (quit) key. For some reason I didnt use esc..
+
+        Things to remember
+
+        1) The raw screens are 320x200 ones, I just had lying around,
+           so dont take any notice of them..
+        2) The mod file I knocked up ages ago, when I first got a tracker
+        3) The code is old, and is a mixture of pascal and inline asm, so
+           its not meant to be a guide for anything but having a laugh at.
+        4) This was all done some time ago, and doesnt represent anything
+           but me going through the learning phase everyone must go through
+           to become a better coder.
+
+        5) USE IT AT YOURE OWN RISK
+
+        Well, Its probably what you call freeware, or public domain, but
+        I strongly suggest you dont use it, as its a lame as hell for
+        anything but an example.
+
+        Phil Carlisle (aka PC aka Zoombapup of Codex)
+
+        No Greetz (not worth it)
+        Oh, I suppose I better say...
+
+        You can contact me on internet on pc@espr.demon.co.uk
+
+

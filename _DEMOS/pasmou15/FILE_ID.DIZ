@@ -1,0 +1,18 @@
+
+ ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+ ³  PASCAL MOUSE v1.5  ³ Mouse Interface for Turbo/Borland Pascal 6.0/7.0
+ ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+  55  procedures  and  functions  that  will  give you full control over
+  the  mouse.  All  the  normal  mouse  routines  are  contained  (reset
+  mouse,  show,  hide,  read  position  and  button state, change cursor
+  shape,  define  sensitivity  and  threshold,  set  cursor  range,  get
+  mouse   driver  information,  support  for  user  interrupt  handlers,
+  etc.).  Written  in  assembler  for speed and small code. VERY EASY TO
+  USE even for a beginner !
+
+  Includes: - full source code
+            - comprehensive documentation
+            - example programs
+
+  Developed by Horatiu A. Tanescu.

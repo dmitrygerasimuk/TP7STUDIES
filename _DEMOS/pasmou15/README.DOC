@@ -1,0 +1,128 @@
+
+
+
+
+        PASCAL MOUSE v1.5
+        Mouse Interface for Turbo/Borland Pascal 6.0/7.0
+
+        Copyright (c) 1996-1997 Horatiu A. Tanescu
+        June 17 1997
+
+
+    Permission  is  granted  to  freely  distribute  this package, as long
+    as  all  files  are  copied as a group and are not modified in any way
+    (including   removal  or  alteration  of  copyright  notices)  and  no
+    charge beyond a cost-recovery fee is made.
+
+    You  may  use  this  software  in  either commercial or non-commercial
+    products  provided  that  you  do  not  charge  any extra fee for this
+    code  and  that  you  give credit to the original author. You are also
+    encouraged  to  "register"  by  telling  me  who  you are and in which
+    product(s)  you  are  using  PASCAL  MOUSE.  Contact  me via e-mail or
+    send me a nice postcard (the preferred method).
+
+    If  you  find  this  software  a useful programming tool in your work,
+    a  money  contribution  would  be appreciated. Your contribution helps
+    me  continue  the  development  of  freeware  programming  tools.  See
+    OTHER.PGM for a short briefing of my other works.
+
+
+    DISCLAIMER
+
+    All  software  and  documentation  associated  with  PASCAL  MOUSE  is
+    provided  "as  is",  with  NO  WARRANTY  of  any  kind.  Although this
+    software  is  very  unlikely  to do any harms to your applications and
+    files,  I  have  absolutely  no  responsibilities  for  any data loss,
+    system  crashes,  or  other  damages.  Using  this software is at your
+    own risk.
+
+
+
+  What is PASCAL MOUSE ?
+  ======================
+
+  PASCAL MOUSE was born when I had to write a PASCAL program that used
+  the mouse. I started to look for a good mouse interface for PASCAL.
+  I was not very satisfied with what I found (some units didn't have all
+  the routines I needed, or they didn't include their full source, or they
+  were very slow or difficult to use). Fortunately I found a fine mouse
+  documentation (from Ralf Brown's INTERRUPT LIST). I decided to write
+  my own mouse interface for PASCAL.
+
+  PASCAL MOUSE provides an easy-to-use mouse interface for programs written
+  in Turbo/Borland Pascal version 6.0/7.0. It contains 55 procedures and
+  functions that interface almost all the standard functions of a Microsoft
+  compatible mouse driver. All the normal mouse routines are contained (reset
+  mouse, show, hide, read position and button state, change cursor shape,
+  define sensitivity and threshold, set cursor range, get mouse driver
+  information, support for user interrupt handlers, etc.).
+
+  PASCAL MOUSE is written using the Borland Pascal built-in assembler for
+  speed and small size. Full source code is included.
+
+  A comprehensive programming manual (MANUAL.DOC) and demo programs are
+  included.
+
+
+  What's new in version 1.5 ?
+  ===========================
+
+  9 procedures and functions were added (support for user interrupt handlers,
+  routines to enable/disable the mouse driver, a routine to change the mouse
+  interrupt rate).
+
+  A new example program is included. It demonstrates how to change the mouse
+  cursor shape in graphic modes.
+
+  The documentation has been rewritten and improved.
+
+  PASCAL MOUSE now supports Turbo/Borland Pascal 6.0 and 7.0.
+
+
+  Release Information
+  ===================
+
+  Version 1.5 (June 17 1997)
+
+    + 9 new functions and procedures (support for user interrupt handlers, etc.)
+    + New example program that demonstrates how to change mouse cursor shape
+      in graphic modes. From a suggestion by Tomasz Palicki.
+    + Improved documentation.
+    + Changed name to reflect version information.
+    + Minor changes in order to support Turbo/Borland Pascal 6.0.
+    + Other minor improvements.
+
+  Version 1.0 (Jan 27 1997)
+
+    First official release.
+
+
+  Acknowledgments
+  ===============
+
+  Thanks to Ralf Brown for his wonderful INTERRUPT LIST.
+
+
+  Contacting the author
+  =====================
+
+  For technical support, questions, comments, problems or incompatibilities,
+  suggestions, enhancements, donations, job offers, etc. write to:
+
+  INTERNET ADRESS:
+  t-horatio@usa.net
+  alpha@lego.soroscj.ro (only if you used the first address and you didn't
+                         get an answer - very unlikely though)
+
+  MAILING ADRESS:
+  Horatiu A. Tanescu
+  Kogalniceanu 1, ap 13
+  3700 Oradea
+  Judetul Bihor
+  Romania
+
+  TELEPHONE:
+  00 40 59 137894
+
+  The more feedback I get the more likely I am to continue improving PASCAL
+  MOUSE and writing other freeware programming libraries.
